@@ -22,3 +22,13 @@
 npm run validate
 npm pack --dry-run
 ```
+
+## Release checklist
+
+1. Update `CHANGELOG.md`.
+2. Run `npm run validate` and `npm audit`.
+3. Create the version commit and Git tag with `npm version patch`, `minor`, or
+   `major` as appropriate.
+4. Push `main` and tags.
+5. Publish with `npm publish`.
+6. Create GitHub release notes for the new tag.

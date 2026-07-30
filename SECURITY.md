@@ -3,8 +3,8 @@
 ## Reporting a vulnerability
 
 Do not open a public issue containing exploit details, API keys, or private
-Shlink data. Contact the repository owner privately through the security
-reporting channel configured on the GitHub repository.
+Shlink data. Use
+[GitHub private vulnerability reporting](https://github.com/AlexGreenUK/XS-Shlink-MCP/security/advisories/new).
 
 ## Deployment guidance
 

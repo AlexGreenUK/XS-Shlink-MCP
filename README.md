@@ -1,10 +1,15 @@
 # XS Shlink MCP
 
-An MCP server for managing and analyzing a
-[Shlink](https://shlink.io/) URL-shortener instance.
+[![npm version](https://img.shields.io/npm/v/xs-shlink-mcp.svg)](https://www.npmjs.com/package/xs-shlink-mcp)
+[![CI](https://github.com/AlexGreenUK/XS-Shlink-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/AlexGreenUK/XS-Shlink-MCP/actions/workflows/ci.yml)
+[![Node.js](https://img.shields.io/node/v/xs-shlink-mcp.svg)](https://www.npmjs.com/package/xs-shlink-mcp)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-It runs locally over `stdio`, keeps the Shlink API key on the machine running
-the MCP client, and does not require Docker.
+A local [Model Context Protocol](https://modelcontextprotocol.io/) server for
+managing and analyzing a [Shlink](https://shlink.io/) URL-shortener instance.
+
+XS Shlink MCP runs over `stdio`, keeps the Shlink API key on the machine running
+the MCP client, and does not require Docker or a separate hosted service.
 
 ## Features
 
@@ -22,21 +27,18 @@ the MCP client, and does not require Docker.
 - A reachable Shlink instance
 - A Shlink API key
 
-## Run from a local checkout
+The initial release was tested with Shlink 5.1.5 and REST API version 3.
 
-```shell
-npm install
-npm run build
-```
+## Quick start
 
-Add the server to an MCP client:
+Configure an MCP client to launch the published npm package:
 
 ```json
 {
   "mcpServers": {
     "shlink": {
-      "command": "node",
-      "args": ["/absolute/path/to/shlink-mcp/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "xs-shlink-mcp"],
       "env": {
         "SHLINK_BASE_URL": "https://s.example.com",
         "SHLINK_API_KEY": "replace-me",
@@ -48,37 +50,19 @@ Add the server to an MCP client:
 }
 ```
 
-On Windows, use a fully escaped absolute path:
+On Windows, use `"command": "npx.cmd"` if the MCP client does not resolve the
+`.cmd` shim automatically.
 
-```json
-"args": ["C:\\path\\to\\shlink-mcp\\dist\\index.js"]
-```
-
-## Run the published package
-
-After the package is published to npm, an MCP client can launch it with:
-
-```json
-{
-  "mcpServers": {
-    "shlink": {
-      "command": "npx",
-      "args": ["-y", "xs-shlink-mcp"],
-      "env": {
-        "SHLINK_BASE_URL": "https://s.example.com",
-        "SHLINK_API_KEY": "replace-me"
-      }
-    }
-  }
-}
-```
+The MCP client starts and stops the server automatically. Do not run ordinary
+interactive commands through the server's standard input because `stdio` is
+reserved for MCP protocol messages.
 
 ## Configuration
 
 | Variable | Required | Default | Description |
 |---|---:|---:|---|
-| `SHLINK_BASE_URL` | Yes | — | Shlink origin without `/rest`, such as `https://s.example.com` |
-| `SHLINK_API_KEY` | Yes | — | Shlink API key |
+| `SHLINK_BASE_URL` | Yes | - | Shlink origin without `/rest`, such as `https://s.example.com` |
+| `SHLINK_API_KEY` | Yes | - | Shlink API key |
 | `SHLINK_API_VERSION` | No | `3` | REST API major version |
 | `SHLINK_TIMEOUT_MS` | No | `10000` | Per-request timeout in milliseconds |
 | `SHLINK_ALLOW_DESTRUCTIVE` | No | `false` | Enables deletion tools when set to `true` |
@@ -127,33 +111,65 @@ All deletion tools require both `SHLINK_ALLOW_DESTRUCTIVE=true` and an explicit
 
 ## Test with MCP Inspector
 
-Build first, then pass the server environment explicitly:
+Set the API key in the current shell, then launch the published package.
+
+PowerShell:
+
+```powershell
+$env:SHLINK_API_KEY="replace-me"
+npx.cmd -y @modelcontextprotocol/inspector -e "SHLINK_BASE_URL=https://s.example.com" -e "SHLINK_API_KEY=$env:SHLINK_API_KEY" -e "SHLINK_API_VERSION=3" -e "SHLINK_ALLOW_DESTRUCTIVE=false" -- npx.cmd -y xs-shlink-mcp
+```
+
+macOS or Linux:
 
 ```shell
+export SHLINK_API_KEY="replace-me"
 npx -y @modelcontextprotocol/inspector \
   -e SHLINK_BASE_URL=https://s.example.com \
-  -e SHLINK_API_KEY=replace-me \
-  -- node /absolute/path/to/shlink-mcp/dist/index.js
+  -e SHLINK_API_KEY="$SHLINK_API_KEY" \
+  -e SHLINK_API_VERSION=3 \
+  -e SHLINK_ALLOW_DESTRUCTIVE=false \
+  -- npx -y xs-shlink-mcp
 ```
 
 Start with `shlink_health`, followed by `list_short_urls`.
 
-## Development
+## Local development
 
 ```shell
-npm run check
-npm test
+git clone https://github.com/AlexGreenUK/XS-Shlink-MCP.git
+cd XS-Shlink-MCP
+npm install
 npm run validate
 ```
 
 The automated tests use mocked Shlink responses. They do not require or modify
 a live Shlink instance.
 
+Useful commands:
+
+```shell
+npm run dev
+npm run build
+npm test
+npm pack --dry-run
+```
+
+## Releases
+
+- [npm package](https://www.npmjs.com/package/xs-shlink-mcp)
+- [GitHub releases](https://github.com/AlexGreenUK/XS-Shlink-MCP/releases)
+- [Changelog](CHANGELOG.md)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Security
 
-See [SECURITY.md](SECURITY.md) for reporting security issues and guidance for
-deploying API keys safely.
+See [SECURITY.md](SECURITY.md). Use GitHub's private vulnerability reporting
+instead of opening a public issue for sensitive reports.
 
 ## License
 
-MIT
+[MIT](LICENSE)
