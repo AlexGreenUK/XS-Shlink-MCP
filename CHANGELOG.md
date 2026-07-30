@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented here.
 
-## Unreleased
+## 0.1.1 - 2026-07-31
 
 - Fix QR-code URLs to pass `size` as a query parameter instead of a path segment.
 - Add margin, format, error-correction, block rounding, and color options to
