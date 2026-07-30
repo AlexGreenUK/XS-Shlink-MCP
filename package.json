@@ -1,0 +1,57 @@
+{
+  "name": "xs-shlink-mcp",
+  "version": "0.1.0",
+  "description": "A Model Context Protocol server for Shlink",
+  "type": "module",
+  "bin": {
+    "xs-shlink-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "node scripts/clean.mjs",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "npm run build && tsx --test tests/*.test.ts",
+    "check": "tsc -p tsconfig.json",
+    "validate": "npm run check && npm test",
+    "prepack": "npm run clean && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "shlink",
+    "url-shortener"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "AlexGreenUK",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexGreenUK/XS-Shlink-MCP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AlexGreenUK/XS-Shlink-MCP/issues"
+  },
+  "homepage": "https://github.com/AlexGreenUK/XS-Shlink-MCP#readme",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
