@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented here.
 
+## Unreleased
+
+- Fix QR-code URLs to pass `size` as a query parameter instead of a path segment.
+- Add margin, format, error-correction, block rounding, and color options to
+  `get_qr_code_url`.
+- Preserve base paths and multi-segment custom slugs in generated QR-code URLs.
+
 ## 0.1.0 - 2026-07-30
 
 - Add a local `stdio` MCP server for Shlink.

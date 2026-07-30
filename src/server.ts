@@ -34,6 +34,45 @@ const visitFilters = {
   excludeBots: z.boolean().optional(),
 };
 
+type QrCodeOptions = {
+  shortCode: string;
+  domain?: string;
+  size?: number;
+  margin?: number;
+  format?: "png" | "svg";
+  errorCorrection?: "L" | "M" | "Q" | "H";
+  roundBlockSize?: boolean;
+  color?: string;
+  bgColor?: string;
+};
+
+export function buildQrCodeUrl(baseUrl: string, options: QrCodeOptions): string {
+  const url = new URL(baseUrl);
+  if (options.domain) url.hostname = options.domain;
+
+  const basePath = url.pathname.replace(/\/+$/, "");
+  const encodedShortCode = options.shortCode
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  url.pathname = `${basePath}/${encodedShortCode}/qr-code`;
+  url.search = "";
+
+  for (const [key, value] of Object.entries({
+    size: options.size,
+    margin: options.margin,
+    format: options.format,
+    errorCorrection: options.errorCorrection,
+    roundBlockSize: options.roundBlockSize,
+    color: options.color,
+    bgColor: options.bgColor,
+  })) {
+    if (value !== undefined) url.searchParams.set(key, String(value));
+  }
+
+  return url.toString();
+}
+
 function result(data: unknown) {
   return {
     content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
@@ -409,16 +448,16 @@ export function createServer(config: Config, client = new ShlinkClient(config)):
       inputSchema: {
         ...shortCodeIdentity,
         size: z.number().int().min(50).max(1000).optional(),
+        margin: z.number().int().nonnegative().optional(),
+        format: z.enum(["png", "svg"]).optional(),
+        errorCorrection: z.enum(["L", "M", "Q", "H"]).optional(),
+        roundBlockSize: z.boolean().optional(),
+        color: z.string().regex(/^[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/).optional(),
+        bgColor: z.string().regex(/^[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/).optional(),
       },
       annotations: { readOnlyHint: true, idempotentHint: true },
     },
-    ({ shortCode, domain, size }) => {
-      const origin = domain ? new URL(config.baseUrl) : null;
-      if (origin && domain) origin.hostname = domain;
-      const base = (origin?.toString() ?? config.baseUrl).replace(/\/+$/, "");
-      const suffix = size ? `/qr-code/${size}` : "/qr-code";
-      return { qrCodeUrl: `${base}/${encodeURIComponent(shortCode)}${suffix}` };
-    },
+    (args) => ({ qrCodeUrl: buildQrCodeUrl(config.baseUrl, args) }),
   );
 
   return server;

@@ -80,6 +80,12 @@ Never commit an API key. Tool results and errors do not include it.
 - `delete_short_url`
 - `get_qr_code_url`
 
+`get_qr_code_url` supports Shlink's QR-code customization parameters: size,
+margin, PNG or SVG format, error-correction level, block-size rounding, and
+foreground/background colors. Shlink deprecated its built-in QR-code endpoint
+in version 4.5, so this tool is provided for compatibility with instances that
+still expose it.
+
 ### Analytics and visits
 
 - `get_visit_stats`
