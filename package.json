@@ -4,7 +4,7 @@
   "description": "A Model Context Protocol server for Shlink",
   "type": "module",
   "bin": {
-    "xs-shlink-mcp": "./dist/index.js"
+    "xs-shlink-mcp": "dist/index.js"
   },
   "files": [
     "dist",
