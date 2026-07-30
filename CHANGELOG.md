@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented here.
 
-## 0.1.0 - Unreleased
+## 0.1.0 - 2026-07-30
 
 - Add a local `stdio` MCP server for Shlink.
 - Add 23 tools covering short URLs, analytics, visits, tags, domains, redirect
